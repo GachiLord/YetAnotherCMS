@@ -1,0 +1,43 @@
+{% extends "./base.html" %}
+{% block content %}
+<div class="container-sm mt-5" style="max-width: 700px">
+    <div class="mb-3">
+        <h1>{{ article.name }}</h1>
+    </div>
+    <div class="mb-5">
+        <h4 class="text-body-secondary">Author: <a class="text-decoration-none" href="{% url 'blog:profile' article.author.username %}">{{ article.author.username }}</a></h4>
+        <h4 class="text-body-secondary">Date: {{ article.publish_date }}</h4>
+    </div>
+    <div class="mb-5">
+        <p class="fs-5">{{ article.content }}</p>
+    </div>
+    <div class="mb-3">
+        <h2>Comments</h2>
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'blog:actionCreateComment' article.public_id %}">
+                {% csrf_token %}
+                <textarea
+                    maxlength="300"
+                    rows="2"
+                    required
+                    autocomplete="off"
+                    name="comment_text"
+                    class="form-control mb-2"
+                    id="comment_text"
+                ></textarea>
+                <button type="submit" class="btn btn-primary">Leave a comment</button>
+            </form>
+        {% endif %}
+        <div class="d-flex justify-content-start flex-column mt-4">
+            {% for comment in comments %}
+            <div class="card mb-3">
+                <div class="card-header">{{ comment.author }}</div>
+                <div class="card-body">
+                    <p class="card-text fs-6">{{ comment.text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

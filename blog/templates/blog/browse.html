@@ -1,0 +1,49 @@
+{% extends "./base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center flex-wrap w-75 m-auto mt-1">
+  {% for article in page %}
+    <div class="card m-2" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{ article.name }}</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">
+          {% if article.author.username != None %}
+          Author: <a class="text-decoration-none" href="{% url 'blog:profile' article.author.username %}">{{ article.author.username }}</a>
+          <br>
+          {% endif %}
+          Date: {{ article.publish_date }}
+        </h6>
+        <p class="card-text">{{ article.content|slice:"0:50" }}...</p>
+        <div class="">
+          <a href="{% url 'blog:article' article.public_id %}" class="btn btn-primary">Read</a>
+          {% if my %}
+          <a href="{% url 'blog:edit' article.public_id %}" class="btn btn-success">Edit</a>
+          <form class="mt-2 d-inline" action="{% url 'blog:actionDeleteArticle' article.public_id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Delete</button>
+          </form>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<nav aria-label="..." class="mt-1">
+  <ul class="pagination justify-content-center">
+    <li class="page-item {% if not page.has_previous %}disabled{% endif %}">
+      <a class="page-link" href="/{% if my %}my/{% endif %}{% if page.has_previous %}{{ page.previous_page_number }}{% endif %}">Previous</a>
+    </li>
+    {% if page.has_previous %}
+    <li class="page-item"><a class="page-link" href="/{% if my %}my/{% endif %}{{ page.previous_page_number }}">{{ page.previous_page_number }}</a></li>
+    {% endif %}
+    <li class="page-item active" aria-current="page">
+      <a class="page-link" href="#">{{ page.number }}</a>
+    </li>
+    {% if page.has_next %}
+    <li class="page-item"><a class="page-link" href="/{% if my %}my/{% endif %}{{ page.next_page_number }}">{{ page.next_page_number }}</a></li>
+    {% endif %}
+    <li class="page-item {% if not page.has_next %}disabled{% endif %}">
+      <a class="page-link" href="/{% if my %}my/{% endif %}{% if page.has_next %}{{ page.next_page_number }}{% endif %}">Next</a>
+    </li>
+  </ul>
+</nav>
+{% endblock %}

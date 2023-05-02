@@ -1,0 +1,57 @@
+{% extends "./base.html" %}
+{% block content %}
+<div class="container-sm mt-5" style="max-width: 350px">
+  {% if action == 'create' %}
+    <form action="{% url 'blog:actionCreateArticle' %}" method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Name</label>
+        <input required type="text" autocomplete="off" name="article_name" class="form-control" id="exampleInputEmail1">
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Text</label>
+        <textarea maxlength="3000" rows="10" required autocomplete="off" name="article_text" class="form-control" id="exampleInputPassword1"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  {% endif %}
+  {% if action == 'edit' %}
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        let textarea = document.getElementById('exampleInputPassword1');
+        textarea.value = `{{ article.content }}`
+        console.log(textarea)
+      })
+    </script>
+    <form action="{% url 'blog:actionEditArticle' article.public_id %}" method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Name</label>
+        <input
+                required
+                type="text"
+                autocomplete="off"
+                name="article_name"
+                class="form-control"
+                id="exampleInputEmail1"
+                value="{{ article.name }}"
+        >
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Text</label>
+        <textarea
+                maxlength="3000"
+                rows="10"
+                required
+                autocomplete="off"
+                name="article_text"
+                class="form-control"
+                id="exampleInputPassword1"
+        >
+        </textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
